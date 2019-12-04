@@ -22,8 +22,8 @@ function load() {
 		var contentArea = document.querySelector('#contentArea');
 		if (contentArea.style.position !== 'absolute') {
 			contentArea.style.position = 'absolute';
-			contentArea.style.left = '-100px';
-			contentArea.style.setProperty('width', '125%', 'important');
+			contentArea.style.left = '-50px';
+			contentArea.style.setProperty('width', '100%', 'important');
 		}
 	}
 
@@ -41,7 +41,7 @@ function loadImages() {
 
 		var otherImages = document.querySelectorAll('a._4-eo._2t9n');
 		[].forEach.call(otherImages, function(elt) {
-			elt.style.setProperty('width', '900px', 'important');
+			elt.style.setProperty('width', '800px', 'important');
 		});
 		
 	}
