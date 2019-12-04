@@ -35,10 +35,10 @@ function load() {
 
 	loadImages();
 
-	// Background-color
-	var backgrounds = document.querySelectorAll('._5vb_, ._5vb_ #contentCol');
-	[].forEach.call(backgrounds, function(elt) {
-		elt.style.setProperty('background-color', '#F8D8AF', 'important');
+	// Posts - Shadows
+	var userContentWrapper = document.querySelectorAll('.userContentWrapper');
+	[].forEach.call(userContentWrapper, function(elt) {
+		elt.style.setProperty('box-shadow', '0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2)', 'important');
 	});
 	
 }
