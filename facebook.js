@@ -38,7 +38,7 @@ function load() {
 	// Background-color
 	var backgrounds = document.querySelectorAll('._5vb_, ._5vb_ #contentCol');
 	[].forEach.call(backgrounds, function(elt) {
-		elt.style.setProperty('background-color', '#F2CB7C', 'important');
+		elt.style.setProperty('background-color', '#F8D8AF', 'important');
 	});
 	
 }
