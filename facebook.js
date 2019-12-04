@@ -25,6 +25,12 @@ function load() {
 			contentArea.style.left = '-50px';
 			contentArea.style.setProperty('width', '100%', 'important');
 		}
+
+		// Remove useless chat trigger
+		var fbDockChatBuddylistNub = document.querySelector('#fbDockChatBuddylistNub');
+		if (fbDockChatBuddylistNub !== null) {
+			fbDockChatBuddylistNub.style.setProperty('display', 'none', 'important');
+		}
 	}
 
 	loadImages();
