@@ -31,15 +31,15 @@ function load() {
 		if (fbDockChatBuddylistNub !== null) {
 			fbDockChatBuddylistNub.style.setProperty('display', 'none', 'important');
 		}
-
-		// Background-color
-		var backgrounds = document.querySelectorAll('._5vb_, ._5vb_ #contentCol');
-		[].forEach.call(backgrounds, function(elt) {
-			elt.style.setProperty('background-color', '#F2CB7C', 'important');
-		});
 	}
 
 	loadImages();
+
+	// Background-color
+	var backgrounds = document.querySelectorAll('._5vb_, ._5vb_ #contentCol');
+	[].forEach.call(backgrounds, function(elt) {
+		elt.style.setProperty('background-color', '#F2CB7C', 'important');
+	});
 	
 }
 
