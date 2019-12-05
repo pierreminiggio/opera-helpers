@@ -1,5 +1,10 @@
+function isFeedUrl() {
+	var url = window.location.href;
+	return url === 'https://www.facebook.com/' || url === 'https://www.facebook.com/?sk=h_chr' || url === 'https://www.facebook.com/?sk=h_nor';
+}
+
 function load() {
-	if (window.location.href === 'https://www.facebook.com/') {
+	if (isFeedUrl()) {
 
 		// Remove right side
 		var rightCol = document.querySelector('#rightCol');
@@ -44,7 +49,7 @@ function load() {
 }
 
 function loadImages() {
-	if (window.location.href === 'https://www.facebook.com/') {
+	if (isFeedUrl()) {
 		var uiScaledImageContainer = document.querySelectorAll('.uiScaledImageContainer');
 		[].forEach.call(uiScaledImageContainer, function(elt) {
 			elt.style.setProperty('width', 'inherit', 'important');
