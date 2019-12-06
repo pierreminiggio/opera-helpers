@@ -1,6 +1,6 @@
 function isFeedUrl() {
 	var url = window.location.href;
-	return url === 'https://www.facebook.com/' || url === 'https://www.facebook.com/?sk=h_chr' || url === 'https://www.facebook.com/?sk=h_nor';
+	return url.includes("https://www.facebook.com/"); // Return Boolean
 }
 
 function load() {
