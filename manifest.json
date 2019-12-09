@@ -11,7 +11,7 @@
 		},
 		{
 	      	"matches": ["*://*/*"],
-	      	"js": ["memo.js"]
+	      	"js": ["memo.js", "env.js"]
 	    }
 	],
 

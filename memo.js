@@ -1,8 +1,30 @@
+var lastMemoText = '';
+
 function autosize(elt) {
   		setTimeout(function() {
     		elt.style.height = 'auto';
       		elt.style.height = elt.scrollHeight + 'px';
     	}, 0);
+}
+
+function fillMemo(elt) {
+	var txt = '';
+	var fileRequest = new XMLHttpRequest();
+	fileRequest.onreadystatechange = function() {
+	 	if(fileRequest.status == 200 && fileRequest.readyState == 4) {
+	   		txt = fileRequest.responseText;
+	   		elt.value = txt;
+	   		lastMemoText = txt;
+	 	}
+	};
+	fileRequest.open('GET', getMemoUrl, true);
+	fileRequest.send();
+}
+
+function updateMemo(value) {
+	var fileRequest = new XMLHttpRequest();
+	fileRequest.open('GET', updateMemoUrl+'?memo='+value, true);
+	fileRequest.send();
 }
 
 (function() {
@@ -11,8 +33,8 @@ function autosize(elt) {
 	var memo = document.querySelector('#memo-pierre');
 	if (memo === null) {
 		memo = document.createElement('TEXTAREA');
+		memo.id = 'memo-pierre';
 		memo.style.position = 'fixed';
-		memo.innerHTML = 'test\ntest\ntest\ntest\ntest\n';
 		memo.style.top = '30%';
 		memo.style.right = '100px';
 		memo.style.width = '400px';
@@ -22,12 +44,18 @@ function autosize(elt) {
 		memo.style.opacity = '.6';
 		memo.style.display = 'none';
 		document.body.appendChild(memo);
-		autosize(memo);
 
 		// Events
 		memo.addEventListener('keydown', function(e) {
 			autosize(this);
 		});
+
+		memo.addEventListener('mouseleave', function(e) {
+			if (this.value !== lastMemoText) {
+				lastMemoText = this.value;
+				updateMemo(this.value);
+			}
+		})
 	}
 
 	// Création memo trigger
@@ -53,6 +81,7 @@ function autosize(elt) {
 		memoTrigger.style.fontSize = '20px';
 		memoTrigger.style.borderRadius = '50%';
 
+		memoTrigger.style.cursor = 'pointer';
 		memoTrigger.style.opacity = '.6';
 		memoTrigger.style.transition = '.5s';
 
@@ -71,7 +100,13 @@ function autosize(elt) {
 				newDisplayState = 'block';
 			}
 			memo.style.display = newDisplayState;
-			autosize(memo);
+
+			if (newDisplayState === 'block') {
+				fillMemo(memo);
+				setTimeout(function() {
+					autosize(memo);
+				}, 500);
+			}
 		});
 
 		document.body.appendChild(memoTrigger);

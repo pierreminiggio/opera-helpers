@@ -1,0 +1,1 @@
+Fill env.js with urls to use memo
