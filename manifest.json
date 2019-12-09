@@ -8,7 +8,11 @@
 		{
 			"matches": ["https://www.facebook.com/*"],
 			"js": ["facebook.js"]
-		}
+		},
+		{
+	      	"matches": ["*://*/*"],
+	      	"js": ["memo.js"]
+	    }
 	],
 
 	"browser_action": {
