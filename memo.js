@@ -51,9 +51,10 @@ function updateMemo(value) {
 		});
 
 		memo.addEventListener('mouseleave', function(e) {
-			if (this.value !== lastMemoText) {
-				lastMemoText = this.value;
-				updateMemo(this.value);
+			var encodedValue = encodeURIComponent(this.value);
+			if (encodedValue !== lastMemoText) {
+				lastMemoText = encodedValue;
+				updateMemo(encodedValue);
 			}
 		})
 	}
