@@ -42,10 +42,19 @@ function updateMemo(value) {
 		memo.style.color = '#fff';
 		memo.style.backgroundColor = '#000';
 		memo.style.opacity = '.6';
+		memo.style.transition = '.5s';
 		memo.style.display = 'none';
 		document.body.appendChild(memo);
 
 		// Events
+		memo.addEventListener('mouseover', function(e) {
+			this.style.opacity = '1';
+		});
+
+		memo.addEventListener('mouseleave', function(e) {
+			this.style.opacity = '.6';
+		});
+
 		memo.addEventListener('keydown', function(e) {
 			autosize(this);
 		});
