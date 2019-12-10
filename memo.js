@@ -49,10 +49,12 @@ function updateMemo(value) {
 		// Events
 		memo.addEventListener('mouseover', function(e) {
 			this.style.opacity = '1';
+			memoTrigger.style.opacity = '1';
 		});
 
 		memo.addEventListener('mouseleave', function(e) {
 			this.style.opacity = '.6';
+			memoTrigger.style.opacity = '.6';
 		});
 
 		memo.addEventListener('keydown', function(e) {
