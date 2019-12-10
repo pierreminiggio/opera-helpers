@@ -50,7 +50,7 @@ function updateMemo(value) {
 			autosize(this);
 		});
 
-		memo.addEventListener('mouseleave', function(e) {
+		memo.addEventListener('change', function(e) {
 			var encodedValue = encodeURIComponent(this.value);
 			if (encodedValue !== lastMemoText) {
 				lastMemoText = encodedValue;
@@ -113,4 +113,3 @@ function updateMemo(value) {
 		document.body.appendChild(memoTrigger);
 	}
 })();
-            
