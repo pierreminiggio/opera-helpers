@@ -92,7 +92,8 @@ function updateMemo(value) {
 		memoTrigger.style.width = '30px';
 		memoTrigger.style.fontSize = '20px';
 		memoTrigger.style.borderRadius = '50%';
-
+		memoTrigger.style.userSelect = 'none';
+		
 		memoTrigger.style.cursor = 'pointer';
 		memoTrigger.style.opacity = '.6';
 		memoTrigger.style.transition = '.5s';
