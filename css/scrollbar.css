@@ -1,16 +1,16 @@
-::-webkit-scrollbar {
+body::-webkit-scrollbar, textarea::-webkit-scrollbar {
 	width: 10px;
 	background-color: #000;
 }
 
-::-webkit-scrollbar:hover {
+body::-webkit-scrollbar:hover, textarea::-webkit-scrollbar:hover {
 	background-color: #444;
 }
 
-::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
     background: #F57C00;
 }
 
-::-webkit-scrollbar-thumb:hover {
+body::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
 	background: #FF8C20;
 }
