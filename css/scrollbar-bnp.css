@@ -1,0 +1,11 @@
+body::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
+    background: #2EA156!important;
+}
+
+body::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
+	background: #4EC176!important;
+}
+
+body::-webkit-scrollbar-thumb:active, textarea::-webkit-scrollbar-thumb:active {
+	background: #6EE196!important;
+}

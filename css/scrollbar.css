@@ -14,3 +14,7 @@ body::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
 	background: #FF8C20;
 }
+
+body::-webkit-scrollbar-thumb:active, textarea::-webkit-scrollbar-thumb:active {
+	background: #FFAC40!important;
+}

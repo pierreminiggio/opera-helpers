@@ -6,14 +6,35 @@
 	"version": "1.0",
 	"content_scripts": [
 		{
-			"matches": ["https://www.facebook.com/*"],
-			"js": ["js/facebook.js"]
-		},
-		{
 	      	"matches": ["*://*/*"],
 	      	"css": ["css/scrollbar.css"],
 	      	"js": ["env.js", "js/memo.js"]
-	    }
+	    },
+	    {
+			"matches": ["https://clients.boursorama.com/*"],
+			"css": ["css/scrollbar-boursorama.css"]
+		},
+	    {
+			"matches": ["https://mabanque.bnpparibas/*"],
+			"css": ["css/scrollbar-bnp.css"]
+		},
+		{
+			"matches": ["https://particuliers.secure.lcl.fr/*"],
+			"css": ["css/scrollbar-lcl.css"]
+		},
+		{
+			"matches": ["https://www.facebook.com/*"],
+			"css": ["css/scrollbar-facebook.css"],
+			"js": ["js/facebook.js"]
+		},
+		{
+			"matches": ["https://www.linkedin.com/*"],
+			"css": ["css/scrollbar-linkedin.css"]
+		},
+		{
+			"matches": ["https://www.youtube.com/*"],
+			"css": ["css/scrollbar-youtube.css"]
+		}
 	],
 
 	"browser_action": {
