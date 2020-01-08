@@ -3,7 +3,7 @@ var lastMemoText = '';
 function autosize(elt) {
   		setTimeout(function() {
     		elt.style.height = 'auto';
-      		elt.style.height = elt.scrollHeight + 'px';
+      		elt.style.height = Math.min(elt.scrollHeight, 500) + 'px';
     	}, 0);
 }
 
