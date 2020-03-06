@@ -4,8 +4,65 @@ if (passwordLoginUrl && getPasswordsUrl) {
 
     (function() {
 
+		function renderData(elt, data) {
+			elt.innerHTML = ''
+
+			const parentsDiv = document.createElement('div')
+			parentsDiv.style.borderBottom = '1px #555 solid'
+			parentsDiv.style.marginBottom = '10px'
+
+			parentsDiv.appendChild(renderAccueil(elt))
+
+			if (data.folder.parents !== undefined) {
+				renderFolders(elt, data.folder.parents, parentsDiv)
+			}
+
+			if (data.folder.infos !== undefined) {
+				renderFolders(elt, [data.folder.infos], parentsDiv)
+			}
+
+			elt.appendChild(parentsDiv)
+
+			parentsDiv.childNodes.forEach(breadcrumb => {
+				if (breadcrumb && breadcrumb !== parentsDiv.children[parentsDiv.children.length-1]) {
+					breadcrumb.innerHTML += '<span style="margin-left: 10px;">></span>'
+				}
+			})
+			
+			const foldersContainer = document.createElement('div')
+			renderFolders(elt, data.folder.dossiers, foldersContainer)
+			elt.appendChild(foldersContainer)
+		}
+
+		function renderAccueil(elt) {
+			const accueil = document.createElement('a')
+			accueil.innerHTML = '🏠Accueil'
+			accueil.style.display = 'inline-block'
+			accueil.style.padding = '5px'
+			accueil.addEventListener('click', function (e) {
+				e.preventDefault()
+				changePasswordView(elt, getPasswordsUrl)
+			})
+
+			return accueil
+		}
+
+		function renderFolders(elt, folders, foldersContainer) {
+			folders.forEach(folder => {
+				let folderLink = document.createElement('a')
+				folderLink.innerHTML = '📁' + folder.libelle
+				folderLink.style.display = 'inline-block'
+				folderLink.style.padding = '5px'
+				folderLink.addEventListener('click', function (e) {
+					e.preventDefault()
+					changePasswordView(elt, getPasswordsUrl + '?folder=' + folder.id_dossier)
+				})
+				foldersContainer.appendChild(folderLink)
+			});
+		}
+
         function fillpassword(elt) {
-			password.innerHTML = 'Chargement...'
+			elt.innerHTML = 'Chargement...'
 			
 			const loginRequest = new XMLHttpRequest()
 			loginRequest.onreadystatechange = () => {
@@ -17,7 +74,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
                     const fileRequest = new XMLHttpRequest()
 					fileRequest.onreadystatechange = () => {
 						if (fileRequest.status == 200 && fileRequest.readyState == 4) {
-							password.innerHTML = fileRequest.responseText
+							renderData(elt, JSON.parse(fileRequest.responseText))
 						}
 					}
 					fileRequest.open('GET', lastPasswordRequest, true)
@@ -26,7 +83,12 @@ if (passwordLoginUrl && getPasswordsUrl) {
 			}
 			loginRequest.open('GET', passwordLoginUrl, true)
             loginRequest.send()
-        }
+		}
+		
+		function changePasswordView(elt, newLink) {
+			lastPasswordRequest = newLink
+			fillpassword(elt)
+		}
 
         // Création password
 		let password = document.querySelector('#password-pierre')
