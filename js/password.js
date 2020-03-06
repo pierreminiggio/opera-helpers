@@ -1,17 +1,31 @@
 if (passwordLoginUrl && getPasswordsUrl) {
-    
+	
+	let lastPasswordRequest = getPasswordsUrl;
+
     (function() {
 
         function fillpassword(elt) {
-            password.innerHTML = 'Chargement...'
-            const fileRequest = new XMLHttpRequest()
-            fileRequest.onreadystatechange = function() {
-                if(fileRequest.status == 200 && fileRequest.readyState == 4) {
-                    password.innerHTML = fileRequest.responseText
+			password.innerHTML = 'Chargement...'
+			
+			const loginRequest = new XMLHttpRequest()
+			loginRequest.onreadystatechange = () => {
+				if (
+					loginRequest.status == 200
+					&& loginRequest.readyState == 4
+					&& JSON.parse(loginRequest.responseText)['logged'] == 1
+				) {
+                    const fileRequest = new XMLHttpRequest()
+					fileRequest.onreadystatechange = () => {
+						if (fileRequest.status == 200 && fileRequest.readyState == 4) {
+							password.innerHTML = fileRequest.responseText
+						}
+					}
+					fileRequest.open('GET', lastPasswordRequest, true)
+					fileRequest.send()
                 }
-            }
-            fileRequest.open('GET', passwordLoginUrl, true)
-            fileRequest.send()
+			}
+			loginRequest.open('GET', passwordLoginUrl, true)
+            loginRequest.send()
         }
 
         // Création password
