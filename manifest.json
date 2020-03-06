@@ -8,7 +8,7 @@
 		{
 	      	"matches": ["*://*/*"],
 	      	"css": ["css/scrollbar.css"],
-	      	"js": ["env.js", "js/memo.js"]
+	      	"js": ["env.js", "js/memo.js", "js/password.js"]
 	    },
 	    {
 			"matches": ["https://clients.boursorama.com/*"],
