@@ -21,6 +21,10 @@ if (passwordLoginUrl && getPasswordsUrl) {
 				renderFolders(elt, [data.folder.infos], parentsDiv)
 			}
 
+			if (data.file.infos.id_fichier !== undefined) {
+				renderFiles(elt, [data.file.infos], parentsDiv)
+			}
+
 			elt.appendChild(parentsDiv)
 
 			parentsDiv.childNodes.forEach(breadcrumb => {
@@ -29,9 +33,18 @@ if (passwordLoginUrl && getPasswordsUrl) {
 				}
 			})
 			
-			const foldersContainer = document.createElement('div')
-			renderFolders(elt, data.folder.dossiers, foldersContainer)
-			elt.appendChild(foldersContainer)
+			const container = document.createElement('div')
+
+			if (data.file.infos.id_fichier !== undefined) {
+				renderItems(elt, data.file.items, container)
+			} else {
+				renderFolders(elt, data.folder.dossiers, container)
+				renderFiles(elt, data.folder.fichiers, container)
+			}
+
+			
+
+			elt.appendChild(container)
 		}
 
 		function renderAccueil(elt) {
@@ -58,6 +71,33 @@ if (passwordLoginUrl && getPasswordsUrl) {
 					changePasswordView(elt, getPasswordsUrl + '?folder=' + folder.id_dossier)
 				})
 				foldersContainer.appendChild(folderLink)
+			});
+		}
+
+		function renderFiles(elt, files, filesContainer) {
+			files.forEach(file => {
+				let fileLink = document.createElement('a')
+				fileLink.innerHTML = '📝' + file.libelle
+				fileLink.style.display = 'inline-block'
+				fileLink.style.padding = '5px'
+				fileLink.addEventListener('click', function (e) {
+					e.preventDefault()
+					changePasswordView(elt, getPasswordsUrl + '?file=' + file.id_fichier)
+				})
+				filesContainer.appendChild(fileLink)
+			});
+		}
+
+		function renderItems(elt, items, itemsContainer) {
+			items.forEach(item => {
+				let itemContainer = document.createElement('div')
+				itemContainer.innerHTML = item.libelle + `: <input
+					type="text"
+					value="` + item.content + `"
+				>`
+				itemContainer.style.display = 'block'
+				itemContainer.style.padding = '5px'
+				itemsContainer.appendChild(itemContainer)
 			});
 		}
 
