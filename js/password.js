@@ -52,6 +52,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
 			accueil.innerHTML = '🏠Accueil'
 			accueil.style.display = 'inline-block'
 			accueil.style.padding = '5px'
+			accueil.style.cursor = 'pointer'
 			accueil.addEventListener('click', function (e) {
 				e.preventDefault()
 				changePasswordView(elt, getPasswordsUrl)
@@ -66,6 +67,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
 				folderLink.innerHTML = '📁' + folder.libelle
 				folderLink.style.display = 'inline-block'
 				folderLink.style.padding = '5px'
+				folderLink.style.cursor = 'pointer'
 				folderLink.addEventListener('click', function (e) {
 					e.preventDefault()
 					changePasswordView(elt, getPasswordsUrl + '?folder=' + folder.id_dossier)
@@ -80,6 +82,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
 				fileLink.innerHTML = '📝' + file.libelle
 				fileLink.style.display = 'inline-block'
 				fileLink.style.padding = '5px'
+				fileLink.style.cursor = 'pointer'
 				fileLink.addEventListener('click', function (e) {
 					e.preventDefault()
 					changePasswordView(elt, getPasswordsUrl + '?file=' + file.id_fichier)
