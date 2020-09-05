@@ -24,8 +24,7 @@
 		},
 		{
 			"matches": ["https://www.facebook.com/*"],
-			"css": ["css/scrollbar-facebook.css"],
-			"js": ["js/facebook.js"]
+			"css": ["css/scrollbar-facebook.css"]
 		},
 		{
 			"matches": ["https://www.linkedin.com/*"],
