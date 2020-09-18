@@ -24,8 +24,10 @@ if (getMemoUrl && updateMemoUrl) {
 
 	function updateMemo(value) {
 		const fileRequest = new XMLHttpRequest()
-		fileRequest.open('GET', updateMemoUrl+'?memo='+value, true)
-		fileRequest.send()
+		fileRequest.open('POST', updateMemoUrl, true)
+		const formData = new FormData()
+		formData.append('memo', value)
+		fileRequest.send(formData)
 	}
 
 	(function() {
