@@ -37,11 +37,7 @@ if (getMemoUrl && updateMemoUrl) {
 		if (memo === null) {
 			memo = document.createElement('TEXTAREA')
 			memo.id = 'memo-pierre'
-			memo.style.position = 'fixed'
-			memo.style.top = '30%'
-			memo.style.right = '100px'
-			memo.style.width = '400px'
-			memo.style.zIndex = '999999'
+			memo.style.width = '100%'
 			memo.style.color = '#fff'
 			memo.style.backgroundColor = '#000'
 			memo.style.opacity = '.6'
@@ -81,13 +77,9 @@ if (getMemoUrl && updateMemoUrl) {
 
 			// Properties
 			memoTrigger.id = 'memo-trigger-pierre'
-			memoTrigger.style.position = 'fixed'
 			memoTrigger.innerHTML = '🖉'
 			memoTrigger.style.textAlign = 'center'
 			memoTrigger.title = 'Memo'
-			memoTrigger.style.top = '30%'
-			memoTrigger.style.right = '20px'
-			memoTrigger.style.zIndex = '999999'
 			memoTrigger.style.color = '#fff'
 			memoTrigger.style.backgroundColor = '#000'
 			memoTrigger.style.height = '30px'

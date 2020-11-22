@@ -138,11 +138,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
 		if (password === null) {
 			password = document.createElement('div')
 			password.id = 'password-pierre'
-			password.style.position = 'fixed'
-			password.style.top = '30%'
-			password.style.right = '100px'
-			password.style.width = '400px'
-			password.style.zIndex = '999999'
+			password.style.width = '100%'
 			password.style.color = '#fff'
 			password.style.backgroundColor = '#000'
 			password.style.opacity = '.6'
@@ -170,12 +166,9 @@ if (passwordLoginUrl && getPasswordsUrl) {
 
 			// Properties
 			passwordTrigger.id = 'password-trigger-pierre'
-			passwordTrigger.style.position = 'fixed'
 			passwordTrigger.innerHTML = '🔑'
 			passwordTrigger.style.textAlign = 'center'
 			passwordTrigger.title = 'Mots de passe'
-			passwordTrigger.style.top = '35%'
-			passwordTrigger.style.right = '20px'
 			passwordTrigger.style.zIndex = '999999'
 			passwordTrigger.style.color = '#fff'
 			passwordTrigger.style.backgroundColor = '#000'
@@ -214,5 +207,4 @@ if (passwordLoginUrl && getPasswordsUrl) {
 			document.body.appendChild(passwordTrigger)
 		}
     })()
-
 }

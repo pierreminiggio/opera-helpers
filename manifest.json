@@ -7,8 +7,7 @@
 	"content_scripts": [
 		{
 	      	"matches": ["*://*/*"],
-	      	"css": ["css/scrollbar.css"],
-	      	"js": ["env.js", "js/memo.js", "js/password.js"]
+	      	"css": ["css/scrollbar.css"]
 	    },
 	    {
 			"matches": ["https://clients.boursorama.com/*"],
@@ -39,5 +38,11 @@
 	"browser_action": {
 		"default_icon": "icon.png",
 		"default_title": "Pierre's Helpers"
+	},
+
+	"sidebar_action": {
+		"default_icon": "icon.png",
+		"default_title": "Pierre's Helpers",
+		"default_panel": "panel.html"
 	}
 }
