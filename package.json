@@ -1,0 +1,8 @@
+{
+  "name": "opera-helpers",
+  "private": true,
+  "description": "Pierre's Helpers (browser extension)",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}

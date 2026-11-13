@@ -1,136 +1,168 @@
 if (passwordLoginUrl && getPasswordsUrl) {
-	
-	let lastPasswordRequest = getPasswordsUrl;
 
-    (function() {
+	(function() {
+
+		// Client of the mdp API (see js/password-api.js): login with email + password, then a token is used
+		const api = createPasswordApi({
+			loginUrl: passwordLoginUrl,
+			logoutUrl: typeof passwordLogoutUrl !== 'undefined' ? passwordLogoutUrl : '',
+			showUrl: getPasswordsUrl,
+			storage: window.localStorage,
+			fetchFn: (url, options) => fetch(url, options),
+		})
+
+		let currentView = {} // { folder: id } or { file: id } or {} for the main folders
+
+		// Everything coming from the server is inserted as text (never as HTML)
+		function el(tag, text, style) {
+			const node = document.createElement(tag)
+			if (text !== undefined) node.textContent = text
+			if (style) Object.assign(node.style, style)
+			return node
+		}
+
+		function link(text, onClick) {
+			const a = el('a', text, { display: 'inline-block', padding: '5px', cursor: 'pointer' })
+			a.addEventListener('click', function (e) {
+				e.preventDefault()
+				onClick()
+			})
+			return a
+		}
+
+		function renderMessage(elt, message) {
+			elt.innerHTML = ''
+			elt.appendChild(el('div', message, { padding: '5px' }))
+		}
+
+		// ---- Login form ---------------------------------------------------------------------
+
+		const LOGIN_ERRORS = {
+			invalid: 'Identifiant ou mot de passe incorrect.',
+			missing: 'Renseignez votre identifiant et votre mot de passe.',
+			network: 'Impossible de joindre le serveur.',
+			unavailable: 'Service momentanément indisponible, réessayez plus tard.',
+		}
+
+		function renderLogin(elt, message) {
+			elt.innerHTML = ''
+
+			const form = el('form', undefined, { padding: '5px' })
+			if (message) form.appendChild(el('div', message, { marginBottom: '10px', color: '#ffb4b4' }))
+
+			const email = el('input', undefined, { display: 'block', width: '90%', marginBottom: '8px' })
+			email.type = 'email'
+			email.placeholder = 'Identifiant (mail)'
+			email.autocomplete = 'username'
+			email.required = true
+
+			const password = el('input', undefined, { display: 'block', width: '90%', marginBottom: '8px' })
+			password.type = 'password'
+			password.placeholder = 'Mot de passe'
+			password.autocomplete = 'current-password'
+			password.required = true
+
+			const submit = el('button', 'Se connecter')
+			submit.type = 'submit'
+
+			form.appendChild(email)
+			form.appendChild(password)
+			form.appendChild(submit)
+
+			form.addEventListener('submit', async function (e) {
+				e.preventDefault()
+				submit.disabled = true
+				const result = await api.login(email.value.trim(), password.value)
+				password.value = '' // the password is never kept
+				if (result.ok) {
+					refresh(elt)
+				} else {
+					renderLogin(elt, LOGIN_ERRORS[result.reason] || LOGIN_ERRORS.invalid)
+				}
+			})
+
+			elt.appendChild(form)
+			email.focus()
+		}
+
+		// ---- Folders / files ---------------------------------------------------------------------
 
 		function renderData(elt, data) {
 			elt.innerHTML = ''
 
-			const parentsDiv = document.createElement('div')
-			parentsDiv.style.borderBottom = '1px #555 solid'
-			parentsDiv.style.marginBottom = '10px'
+			const parentsDiv = el('div', undefined, { borderBottom: '1px #555 solid', marginBottom: '10px' })
 
-			parentsDiv.appendChild(renderAccueil(elt))
-
+			const crumbs = [link('🏠Accueil', () => load(elt, {}))]
 			if (data.folder.parents !== undefined) {
-				renderFolders(elt, data.folder.parents, parentsDiv)
+				data.folder.parents.forEach(folder => crumbs.push(folderLink(elt, folder)))
 			}
-
 			if (data.folder.infos !== undefined) {
-				renderFolders(elt, [data.folder.infos], parentsDiv)
+				crumbs.push(folderLink(elt, data.folder.infos))
 			}
-
 			if (data.file.infos.id_fichier !== undefined) {
-				renderFiles(elt, [data.file.infos], parentsDiv)
+				crumbs.push(fileLink(elt, data.file.infos))
 			}
-
+			crumbs.forEach((crumb, index) => {
+				parentsDiv.appendChild(crumb)
+				if (index < crumbs.length - 1) parentsDiv.appendChild(el('span', '>', { marginLeft: '10px' }))
+			})
+			parentsDiv.appendChild(link('Déconnexion', async () => {
+				await api.logout()
+				renderLogin(elt)
+			})).style.float = 'right'
 			elt.appendChild(parentsDiv)
 
-			parentsDiv.childNodes.forEach(breadcrumb => {
-				if (breadcrumb && breadcrumb !== parentsDiv.children[parentsDiv.children.length-1]) {
-					breadcrumb.innerHTML += '<span style="margin-left: 10px;">></span>'
-				}
-			})
-			
-			const container = document.createElement('div')
-
+			const container = el('div')
 			if (data.file.infos.id_fichier !== undefined) {
-				renderItems(elt, data.file.items, container)
+				data.file.items.forEach(item => container.appendChild(itemRow(item)))
 			} else {
-				renderFolders(elt, data.folder.dossiers, container)
-				renderFiles(elt, data.folder.fichiers, container)
+				data.folder.dossiers.forEach(folder => container.appendChild(folderLink(elt, folder)))
+				data.folder.fichiers.forEach(file => container.appendChild(fileLink(elt, file)))
 			}
-
-			
-
 			elt.appendChild(container)
 		}
 
-		function renderAccueil(elt) {
-			const accueil = document.createElement('a')
-			accueil.innerHTML = '🏠Accueil'
-			accueil.style.display = 'inline-block'
-			accueil.style.padding = '5px'
-			accueil.style.cursor = 'pointer'
-			accueil.addEventListener('click', function (e) {
-				e.preventDefault()
-				changePasswordView(elt, getPasswordsUrl)
-			})
-
-			return accueil
+		function folderLink(elt, folder) {
+			return link('📁' + folder.libelle, () => load(elt, { folder: folder.id_dossier }))
 		}
 
-		function renderFolders(elt, folders, foldersContainer) {
-			folders.forEach(folder => {
-				let folderLink = document.createElement('a')
-				folderLink.innerHTML = '📁' + folder.libelle
-				folderLink.style.display = 'inline-block'
-				folderLink.style.padding = '5px'
-				folderLink.style.cursor = 'pointer'
-				folderLink.addEventListener('click', function (e) {
-					e.preventDefault()
-					changePasswordView(elt, getPasswordsUrl + '?folder=' + folder.id_dossier)
-				})
-				foldersContainer.appendChild(folderLink)
-			});
+		function fileLink(elt, file) {
+			return link('📝' + file.libelle, () => load(elt, { file: file.id_fichier }))
 		}
 
-		function renderFiles(elt, files, filesContainer) {
-			files.forEach(file => {
-				let fileLink = document.createElement('a')
-				fileLink.innerHTML = '📝' + file.libelle
-				fileLink.style.display = 'inline-block'
-				fileLink.style.padding = '5px'
-				fileLink.style.cursor = 'pointer'
-				fileLink.addEventListener('click', function (e) {
-					e.preventDefault()
-					changePasswordView(elt, getPasswordsUrl + '?file=' + file.id_fichier)
-				})
-				filesContainer.appendChild(fileLink)
-			});
+		function itemRow(item) {
+			const row = el('div', item.libelle + ': ', { display: 'block', padding: '5px' })
+			const input = el('input')
+			input.type = 'text'
+			input.value = item.content
+			row.appendChild(input)
+			return row
 		}
 
-		function renderItems(elt, items, itemsContainer) {
-			items.forEach(item => {
-				let itemContainer = document.createElement('div')
-				itemContainer.innerHTML = item.libelle + `: <input
-					type="text"
-					value="` + item.content + `"
-				>`
-				itemContainer.style.display = 'block'
-				itemContainer.style.padding = '5px'
-				itemsContainer.appendChild(itemContainer)
-			});
-		}
+		// ---- Loading ----------------------------------------------------------------------------------
 
-        function fillpassword(elt) {
-			elt.innerHTML = 'Chargement...'
-			
-			const loginRequest = new XMLHttpRequest()
-			loginRequest.onreadystatechange = () => {
-				if (
-					loginRequest.status == 200
-					&& loginRequest.readyState == 4
-					&& JSON.parse(loginRequest.responseText)['logged'] == 1
-				) {
-                    const fileRequest = new XMLHttpRequest()
-					fileRequest.onreadystatechange = () => {
-						if (fileRequest.status == 200 && fileRequest.readyState == 4) {
-							renderData(elt, JSON.parse(fileRequest.responseText))
-						}
-					}
-					fileRequest.open('GET', lastPasswordRequest, true)
-					fileRequest.send()
-                }
+		async function load(elt, view) {
+			currentView = view
+			renderMessage(elt, 'Chargement...')
+			const result = await api.show(view)
+			if (result.ok) {
+				renderData(elt, result.data)
+			} else if (result.unauthorized) {
+				renderLogin(elt, 'Session expirée, reconnectez-vous.')
+			} else if (result.forbidden) {
+				renderMessage(elt, 'Accès refusé.')
+				elt.appendChild(link('🏠Accueil', () => load(elt, {})))
+			} else {
+				renderMessage(elt, LOGIN_ERRORS[result.reason] || LOGIN_ERRORS.unavailable)
 			}
-			loginRequest.open('GET', passwordLoginUrl, true)
-            loginRequest.send()
 		}
-		
-		function changePasswordView(elt, newLink) {
-			lastPasswordRequest = newLink
-			fillpassword(elt)
+
+		function refresh(elt) {
+			if (api.isLoggedIn()) {
+				load(elt, currentView)
+			} else {
+				renderLogin(elt)
+			}
 		}
 
         // Création password
@@ -200,7 +232,7 @@ if (passwordLoginUrl && getPasswordsUrl) {
 				password.style.display = newDisplayState
 
 				if (newDisplayState === 'block') {
-					fillpassword(password)
+					refresh(password)
 				}
 			})
 
