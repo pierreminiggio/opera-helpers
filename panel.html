@@ -1,14 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pierre's Helpers</title>
+        <link rel="stylesheet" href="./css/panel.css">
     </head>
     <body>
+        <main class="page">
+            <div class="page-card">
+                <header class="banner">
+                    <svg class="banner-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"></rect><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"></path></svg>
+                    <span class="banner-title">Pierre's Helpers</span>
+                </header>
+                <div class="tabs" role="tablist">
+                    <button type="button" class="tab" id="tab-passwords" role="tab" aria-selected="true" aria-controls="panel-passwords">Mots de passe</button>
+                    <button type="button" class="tab" id="tab-memo" role="tab" aria-selected="false" aria-controls="panel-memo" tabindex="-1">Mémo</button>
+                </div>
+                <div class="page-content">
+                    <section id="panel-passwords" role="tabpanel" aria-labelledby="tab-passwords"><div id="passwords-root"></div></section>
+                    <section id="panel-memo" role="tabpanel" aria-labelledby="tab-memo" hidden><div id="memo-root"></div></section>
+                </div>
+            </div>
+        </main>
         <script src="./env.js"></script>
-        <script src="./js/memo.js"></script>
         <script src="./js/password-api.js"></script>
-        <script src="./js/password.js"></script>
+        <script src="./js/password-panel.js"></script>
+        <script src="./js/memo.js"></script>
+        <script src="./js/panel.js"></script>
     </body>
 </html>
