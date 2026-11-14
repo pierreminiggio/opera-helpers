@@ -9,6 +9,12 @@ function createPasswordPanel({ root, api, doc, copyText }) {
 		network: 'Impossible de joindre le serveur.',
 		unavailable: 'Service momentanément indisponible, réessayez plus tard.',
 	}
+
+	function throttledMessage(retryAfter) {
+		if (!(retryAfter > 0)) return 'Trop de tentatives, réessayez plus tard.'
+		const minutes = Math.max(1, Math.ceil(retryAfter / 60))
+		return 'Trop de tentatives, réessayez dans ' + minutes + (minutes === 1 ? ' minute.' : ' minutes.')
+	}
 	const SVG_NS = 'http://www.w3.org/2000/svg'
 	const ICONS = {
 		folder: ['M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
@@ -88,7 +94,7 @@ function createPasswordPanel({ root, api, doc, copyText }) {
 			if (result.ok) {
 				refresh()
 			} else {
-				renderLogin(LOGIN_ERRORS[result.reason] || LOGIN_ERRORS.invalid)
+				renderLogin(result.reason === 'throttled' ? throttledMessage(result.retryAfter) : (LOGIN_ERRORS[result.reason] || LOGIN_ERRORS.invalid))
 			}
 		})
 		root.appendChild(form)

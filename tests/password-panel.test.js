@@ -123,3 +123,26 @@ test('login success loads the folders; logout returns to the form', async () => 
 	assert.equal(calls.logout, 1)
 	assert.ok(root.querySelector('form.login-form'))
 })
+
+test('throttled login: tells the user how long to wait (minutes, rounded up) and keeps the form', async () => {
+	const { root, panel } = setup({ isLoggedIn: () => false, login: async () => ({ ok: false, reason: 'throttled', retryAfter: 421 }) })
+	panel.refresh()
+	root.querySelector('input[type=email]').value = 'a@b.fr'
+	root.querySelector('input[type=password]').value = 'x'
+	root.querySelector('form').dispatchEvent(new root.ownerDocument.defaultView.Event('submit', { cancelable: true })); await tick()
+	const text = root.querySelector('.alert-danger').textContent
+	assert.ok(text.includes('Trop de tentatives'), text)
+	assert.ok(text.includes('8 minutes'), text) // 421 s -> 8 min
+	assert.ok(root.querySelector('form.login-form'))
+})
+
+test('throttled with a very short delay says one minute, unknown delay says later', async () => {
+	for (const [retryAfter, expected] of [[5, '1 minute'], [0, 'plus tard']]) {
+		const { root, panel } = setup({ isLoggedIn: () => false, login: async () => ({ ok: false, reason: 'throttled', retryAfter }) })
+		panel.refresh()
+		root.querySelector('input[type=email]').value = 'a@b.fr'
+		root.querySelector('input[type=password]').value = 'x'
+		root.querySelector('form').dispatchEvent(new root.ownerDocument.defaultView.Event('submit', { cancelable: true })); await tick()
+		assert.ok(root.querySelector('.alert-danger').textContent.includes(expected), String(retryAfter))
+	}
+})

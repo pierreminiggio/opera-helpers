@@ -152,3 +152,18 @@ test('corrupted stored data counts as logged out', () => {
 	const { api: a } = api(fakeFetch(), memoryStorage({ 'mdp-api-session': '{not json' }))
 	assert.equal(a.isLoggedIn(), false)
 })
+
+test('a 429 (too many attempts) is told apart from wrong credentials and carries the delay', async () => {
+	const { api: a, storage } = api(fakeFetch({ status: 429, body: { logged: 0, error: 'Trop de tentatives', retry_after: 421 } }))
+	const r = await a.login('a@b.fr', 'pw')
+	assert.deepEqual(r, { ok: false, reason: 'throttled', retryAfter: 421, message: 'Trop de tentatives' })
+	assert.equal(a.isLoggedIn(), false)
+	assert.deepEqual(storage.dump(), {})
+})
+
+test('a 429 without a usable delay still reads as throttled', async () => {
+	const { api: a } = api(fakeFetch({ status: 429, body: {} }))
+	const r = await a.login('a@b.fr', 'pw')
+	assert.equal(r.reason, 'throttled')
+	assert.equal(r.retryAfter, 0)
+})

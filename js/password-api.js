@@ -52,6 +52,10 @@
 				return { ok: false, reason: 'network' }
 			}
 			const body = await parse(response)
+			if (response.status === 429) {
+				const wait = Number(body.retry_after)
+				return { ok: false, reason: 'throttled', retryAfter: Number.isFinite(wait) && wait > 0 ? wait : 0, message: body.error }
+			}
 			if (response.status === 401) return { ok: false, reason: 'invalid', message: body.error }
 			if (response.status >= 500) return { ok: false, reason: 'unavailable', message: body.error }
 			if (!response.ok || typeof body.token !== 'string' || body.token === '') {
